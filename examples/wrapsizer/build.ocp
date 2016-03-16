@@ -1,0 +1,8 @@
+binannot = false
+
+(* enabled = false *)
+
+begin program "wrapsizer"
+  requires = [ "wxOCaml"  "wxSamples-resources"  ]
+  files = [    "wrapsizer.ml"  ]
+end

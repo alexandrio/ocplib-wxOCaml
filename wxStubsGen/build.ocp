@@ -1,0 +1,54 @@
+(*******************************************************************)
+(*                                                                 *)
+(*                            wxOCaml                              *)
+(*                                                                 *)
+(*                       Fabrice LE FESSANT                        *)
+(*                                                                 *)
+(*                 Copyright 2013, INRIA/OCamlPro.                 *)
+(*            Licence LGPL v3.0 with linking exception.            *)
+(*                                                                 *)
+(*******************************************************************)
+
+begin program "wxStubsGen"
+
+   files = [
+    "genVersion.ml" (ocp2ml = true env_strings = [ "wx_version" ])
+
+    "genMisc.ml"
+    "genTypes.ml";
+    "genGlobals.ml";
+
+
+    "genLexer.mll";
+    "genParser.mly";
+
+    "genProject.ml"
+    "genCplusplus.ml";
+    "genOCaml.ml"
+    "genEvents.ml";
+
+    "genMain.ml"
+  ]
+
+    requires = [ "unix" "wxConfig"
+                   "wxWidgets_ml_dir"  "wxWidgets_cpp_dir" ]
+
+    build_rules = [
+      [
+        "%{wxWidgets_ml_dir_FULL_SRC_DIR}%/build.ocpgen"
+          "%{wxWidgets_cpp_dir_FULL_SRC_DIR}%/build.ocpgen"
+      ]
+        (
+        uniq_rule = "build.ocpgen"
+        sources = [
+	 %string( strings = [ "%{wxStubsGen_FULL_DST_DIR}%/wxStubsGen.asm" exe_ext ])]
+          commands = [
+            { "%{wxStubsGen_FULL_DST_DIR}%/wxStubsGen.asm"
+                "-api"; "../api";
+              "-cpp"; "../wxWidgets_cpp";
+              "-ocaml"; "../wxWidgets_ml";
+            }
+          ]
+      )
+    ]
+end

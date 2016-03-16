@@ -9,6 +9,7 @@
 #*                                                                 *#
 #*******************************************************************#
 
+include config/Makefile
 NJOBS=-j 10
 
 # The new version of ocp-build will fail to build because some warnings have
@@ -16,14 +17,7 @@ NJOBS=-j 10
 # apply the -no-color switch to use the old behavior.
 
 all:
-	$(MAKE) -C wxDefsGen
-	$(MAKE) -C wxStubsGen
-	$(MAKE) -C  wxWidgets $(NJOBS)
-	$(MAKE) -C samples/wxSamples-resources
-	ocp-build
-
-debug:
-	$(MAKE) -C wxWidgets $(NJOBS)
+	ocp-build init
 	ocp-build
 
 byte:
@@ -33,14 +27,16 @@ opt:
 	ocp-build -asm
 
 partialclean:
-	ocp-build -clean
+	ocp-build clean
 
 clean:
 	rm -f *~
-	$(MAKE) -C wxDefsGen clean
+	$(MAKE) -C examples clean
+	$(MAKE) -C wxConfig clean
 	$(MAKE) -C wxStubsGen clean
-	$(MAKE) -C wxWidgets clean
-	ocp-build -clean
+	$(MAKE) -C wxWidgets_ml clean
+	$(MAKE) -C wxWidgets_cpp clean
+	ocp-build clean
 
 distclean: clean
 	rm -rf config/autom4te.cache config/config.status config/config.log
@@ -51,3 +47,25 @@ configure: config/configure.ac config/m4/*
 	cd config; \
 		aclocal -I m4; \
 		autoconf	
+
+ML_CFG=wxConfig
+ML_SRC=wxWidgets_cpp
+
+DSTDIR=$(shell dirname $(OCAMLLIB))/wxOCaml
+
+install:
+	mkdir -p $(DSTDIR)
+	cp -f _obuild/wxConfig/*.cma $(DSTDIR)
+	cp -f _obuild/wxConfig/*.cmxa $(DSTDIR)
+	cp -f _obuild/wxConfig/*.a $(DSTDIR)
+	cp -f _obuild/wxConfig/*.cmxs $(DSTDIR)
+	cp -f _obuild/wxConfig/*.cmi $(DSTDIR)
+	cp -f _obuild/wxConfig/*.cmx $(DSTDIR)
+	cp -f _obuild/wxOCaml/*.cma $(DSTDIR)
+	cp -f _obuild/wxOCaml/*.cmxa $(DSTDIR)
+	cp -f _obuild/wxOCaml/*.a $(DSTDIR)
+	cp -f _obuild/wxOCaml/*.cmxs $(DSTDIR)
+	cp -f _obuild/wxOCaml/*.cmi $(DSTDIR)
+	cp -f _obuild/wxOCaml/*.cmx $(DSTDIR)
+	cp -f wxWidgets_cpp/*.a $(DSTDIR)
+	cp -f META $(DSTDIR)

@@ -1,6 +1,0 @@
-binannot = false
-
-begin program "minimal"
-  requires = [ "wxWidgets" "wxSamples-resources" ]
-  files = [    "minimal.ml"  ]
-end

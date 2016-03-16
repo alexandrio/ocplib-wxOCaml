@@ -1,0 +1,47 @@
+
+      begin rules "wxWidgets_cpp_dir"
+      end
+
+    if include "build.ocpgen" then {} else {
+      GENERATED_CPP_SOURCES = []
+    }
+
+      begin rules "libwxOCaml_api"
+      SOURCES = [ GENERATED_CPP_SOURCES "wxOCaml.cpp" ]
+      OBJECTS = %subst_ext( files = SOURCES to_ext = obj_ext )
+
+      requires = [ "wxConfig_dir" ]
+
+      libwxOCaml_api_a = %string( strings = [ "libwxOCaml_api" lib_ext ])
+      build_rules = [
+        OBJECTS (
+          commands = [
+            { cxx cxxflags cppflags "-c" "%{basename}%.cpp" }
+          ]
+            sources = [ "%{basename}%.cpp"
+                          "%{wxConfig_dir_FULL_SRC_DIR}%/wxOCaml.h"
+                          "%{wxConfig_dir_FULL_SRC_DIR}%/wxOCamlConfig.h"
+                      ]
+        )
+
+	
+
+          libwxOCaml_api_a (
+            build_target = true
+if system = "win32" || system = "win64" then {
+              commands = [
+                { "link" "/lib" linkflags
+		%string( strings = ["/out:" libwxOCaml_api_a])
+		 OBJECTS }
+              ]
+} else {
+              commands = [
+                { "ar" "rc" libwxOCaml_api_a OBJECTS }
+                { "ranlib" libwxOCaml_api_a }
+              ]
+}
+              sources = OBJECTS
+          )
+
+      ]
+  end

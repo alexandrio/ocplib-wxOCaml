@@ -9,25 +9,28 @@
 (*                                                                 *)
 (*******************************************************************)
 
-exe_ext = ""
-obj_ext = ".o"
-lib_ext = ".a"
+(* An Hello World example, with C++ / OCaml comparisons *)
 
-binannot = false
+open WxWidgets
+open WxDefs
 
-wx_version = "@WX_VERSION@"
+let _ =
+  let onInit event =
 
-cxx = "@CXX@"
-cppflags = [ %split_simplify( s = "@CPPFLAGS@" ) "-I" "@OCAMLLIB@" "-I" "../wxConfig" "-g" "-fPIC" ]
-cxxflags = %split_simplify( s = "@CXXFLAGS@" )
-cxxlibs = %split_simplify(s = "@LIBS@" )
+    (* C++: wxFrame *frame = new wxFrame((wxFrame* ) NULL, -1,
+       _T("Hello wxWidgets World")); *)
+    let frame = WxFrame.create None (-1) "Hello wxWidgets World" in
 
-begin config "link-with-wxOCaml"
-  custom = true
-  bytelink += [ "-custom" ]
-  link += [ "-cclib" "-lwxOCaml_api @LIBS@ -lstdc++ " "-cclib" "-L wxWidgets_cpp" ]
-end
+    (* C++: frame->CreateStatusBar(); *)
+    ignore_wxStatusBar (WxFrame.createStatusBar frame);
 
-begin config "compile-c-with-wxWidget"
-  ccopt = [ cxxflags cppflags ]
-end
+    (* C++: frame->SetStatusText(_T("Hello World")); *)
+    WxFrame.setStatusText frame  "Welcome to wxWidgets!" 0;
+
+    (* C++: frame->Show(true);  *)
+    ignore_bool ( WxFrame.show frame );
+
+    (* C++: SetTopWindow(frame);   *)
+    WxApp.setTopWindow (WxFrame.wxWindow frame)
+  in
+  wxMain onInit

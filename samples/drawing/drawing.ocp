@@ -1,8 +1,0 @@
-binannot = false
-
-(* enabled = false *)
-
-begin program "drawing"
-  requires = [ "wxWidgets"  "wxSamples-resources" ]
-  files = [    "drawing.ml"  ]
-end

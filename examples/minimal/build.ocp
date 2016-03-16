@@ -1,0 +1,6 @@
+binannot = false
+
+begin program "minimal"
+  requires = [ "wxOCaml" "wxSamples-resources" ]
+  files = [    "minimal.ml"  ]
+end
